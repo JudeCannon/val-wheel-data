@@ -1,33 +1,27 @@
-import java.user;
+package src.java;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public String ReadFile(path Path){
-    try {
-        String content = Files.readString(path);
-        return content;
-    } catch (IOException e) {
-        e.printStackTrace();
-        return null;
-    }
-}
+//  Lines of file: map,HS,WR,KD,perfScore 
+
+
 class Agent{
-    protected user User;
+    protected User user;
     String name;
     double HS;
     double WR;
     double KD;
     int perfScore;
-    static int gamesPlayed;
+    int gamesPlayed;
     Path agentPath;
 
-    public Agent(String name, user User){
-        this.user = User;
+    public Agent(String name, User user){
+        this.user = user;
         this.name = name;
-        this.agentPath = Files.createDirectories(Path.of(user.getName() + "/agents/" + name));
-
         try {
+            this.agentPath = Files.createDirectories(Path.of(user.getName() + "/agents/" + name));
             if (!Files.exists(agentPath)) {
                 Files.createFile(agentPath);
             }else{
@@ -44,46 +38,59 @@ class Agent{
             this.gamesPlayed = 0;
         }
     }
-    public void addData(path: Path){
+
+    public String ReadFile(Path path){
+    try {
+        String content = Files.readString(path);
+        return content;
+    } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
+    public void addData(Path path){
         String content = ReadFile(path);
         String[] lines = content.split("\n");
         for (String line : lines) {
-            String[] stats = line.split(":");
+            String[] stats = line.split(",");
             double tempHS = this.HS * gamesPlayed;
             double tempWR = this.WR * gamesPlayed;
             double tempKD = this.KD * gamesPlayed;
             int perfScore = this.perfScore * gamesPlayed;
             gamesPlayed++;
-            this.HS = (tempHS + stats[1]) / gamesPlayed;
-            this.WR = (tempWR + stats[2]) / gamesPlayed;
-            this.KD = (tempKD + stats[3]) / gamesPlayed;
-            this.perfScore = (perfScore + stats[4]);
+            this.HS = (tempHS + Double.parseDouble(stats[1])) / gamesPlayed;
+            this.WR = (tempWR + Double.parseDouble(stats[2])) / gamesPlayed;
+            this.KD = (tempKD + Double.parseDouble(stats[3])) / gamesPlayed;
+            this.perfScore = (perfScore + Integer.parseInt(stats[4]));
             if (this.perfScore < 0) {
                 this.perfScore = 0;
             } else if (this.perfScore > 500) {
                 this.perfScore = 500;
             }
+            
+
         }
     } 
 }
 
 class Sentinel extends Agent{
-    public Sentinel(String name, user: User){
+    public Sentinel(String name, User user){
         super(name, user);
     }
 }
 class Duelist extends Agent{
-    public Duelist(String name, user: User){
+    public Duelist(String name, User user){
         super(name, user);
     }
 }
 class Initiator extends Agent{
-    public Initiator(String name, user: User){
+    public Initiator(String name, User user){
         super(name, user);
     }
 }
 class Controller extends Agent{
-    public Controller(String name, user: User){
+    public Controller(String name, User user){
         super(name, user);
     }
 }

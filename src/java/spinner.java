@@ -1,3 +1,4 @@
+package src.java;
 import java.util.Scanner;
 import java.util.Random;
 // Duelist = 1, Sentinel = 2, Initiator = 3, Controller = 4
